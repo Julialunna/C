@@ -1,4 +1,4 @@
-//Júlia Almeida Luna, Lorena Ricoy Martins 203B
+//JÃºlia Almeida Luna
 #include <stdio.h>
 #include "listas.h"
 #include "pilhas.h"
@@ -95,7 +95,7 @@ int main(int argc, char** argv) {
 	pilha_lst* pilha;
 	filal* fila;
 	int i, num_linhas = 0, comando = 0, valor = 0, controle = 0, controle_eh_possivel = 0;
-	int tam_pilha = 0, tam_fila=0, tam_lista = 0, valor_inseridos=0, valor_retirados=0, diferença=0;
+	int tam_pilha = 0, tam_fila=0, tam_lista = 0, valor_inseridos=0, valor_retirados=0, diferenï¿½a=0;
 
 	lista_ordenado = lst_cria();
 	retirados = lst_cria();
@@ -153,8 +153,8 @@ int main(int argc, char** argv) {
 	tam_pilha = calcula_tam_pilha(pilha);
 	tam_lista = calcula_tam_lista(lista_ordenado);
 	
-	diferença = valor_inseridos - valor_retirados;
-	resultado(tam_fila, tam_pilha, tam_lista, diferença);
+	diferenï¿½a = valor_inseridos - valor_retirados;
+	resultado(tam_fila, tam_pilha, tam_lista, diferenï¿½a);
 
 	return SUCESSO;
 }
