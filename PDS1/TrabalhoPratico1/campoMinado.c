@@ -7,15 +7,6 @@
 #define NAO_PERDEU 0
 #define NAO_TERMINOU 2
 #define TAMANHO_MAXIMO_LINHA 201
-void imprimirMatriz(char tabuleiro[100][100], int tamanhoMatriz){
-    int j, k;
-        for(j=0;j<tamanhoMatriz;j++){ 
-            for(k=0;k<tamanhoMatriz;k++){
-                printf("%c ",tabuleiro[j][k]);
-            }
-            printf("\n");
-        }
-}
 //função que guarda na matriz apenas os caracteres de interesse: x e b
 void criaLinhaDoTabuleiro(char matriz[TAMANHO_MAXIMO_TABULEIRO][TAMANHO_MAXIMO_TABULEIRO], char linha[TAMANHO_MAXIMO_LINHA], int j){
     int k, indiceColuna=0;
@@ -27,7 +18,7 @@ void criaLinhaDoTabuleiro(char matriz[TAMANHO_MAXIMO_TABULEIRO][TAMANHO_MAXIMO_T
         }
 }
 int processaJogada(int coordenadasJogada[2], char tabuleiro[TAMANHO_MAXIMO_TABULEIRO][TAMANHO_MAXIMO_TABULEIRO], int tamanho){
-    //confere se a casa não tem bomba
+    //confere se a casa não tem bomba, caso tenha a pessoa perdeu
     if(tabuleiro[coordenadasJogada[0]][coordenadasJogada[1]]=='b'){
       
         return PERDEU;
@@ -44,7 +35,7 @@ int processaJogada(int coordenadasJogada[2], char tabuleiro[TAMANHO_MAXIMO_TABUL
         &&(tabuleiro[coordenadasJogada[0]][coordenadasJogada[1]-1]!='b')
         &&(tabuleiro[coordenadasJogada[0]+1][coordenadasJogada[1]-1]!='b')
         &&(tabuleiro[coordenadasJogada[0]-1][coordenadasJogada[1]+1]!='b')){
-            
+            //se não tiver bombas ao redor as casas que não foram reveladas se revelam
             if(tabuleiro[coordenadasJogada[0]+1][coordenadasJogada[1]]=='x'){
                 tabuleiro[coordenadasJogada[0]+1][coordenadasJogada[1]]='r';
                 
@@ -77,6 +68,7 @@ int processaJogada(int coordenadasJogada[2], char tabuleiro[TAMANHO_MAXIMO_TABUL
     }
 
 }
+//função que confere se todas as casas que não tem bombas foram reveladas
 int confereSeTerminou(char tabuleiro[TAMANHO_MAXIMO_TABULEIRO][TAMANHO_MAXIMO_TABULEIRO], int tamanho){
     int i, j;
     for(i=0;i<tamanho;i++){
@@ -96,6 +88,7 @@ int main(int argc, char** argv[]){
     scanf("%d", &quantJogos);
     //looping que cria a quantidade de jogos que o usuário pediu
     for(i=0;i<quantJogos;i++){
+        //reseta o estado do jogo
         perdeu=0;
         scanf("%d", &tamanhoTabuleiro);
         setbuf(stdin, NULL);
@@ -113,6 +106,7 @@ int main(int argc, char** argv[]){
         perdeu = processaJogada(coordenadasJogada, tabuleiro, tamanhoTabuleiro);
         }
        }
+       //caso a pessoa não tenha perdido confere se ela terminou o jogo
        if(perdeu!=PERDEU){
         perdeu=confereSeTerminou(tabuleiro, tamanhoTabuleiro);
        }
@@ -125,26 +119,6 @@ int main(int argc, char** argv[]){
         printf("GANHOU\n");
        }
        
-        
     }
-
     return SUCESSO;
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
