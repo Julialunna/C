@@ -51,20 +51,18 @@ int encontraMarca(produto produtoCadastrado, marca marcas[QUANTIDADE_PRODUTOS]){
 void produzResultados(produto produtos[QUANTIDADE_PRODUTOS], marca marcas[QUANTIDADE_PRODUTOS]){
     int i;
     for(i=0;i<QUANTIDADE_PRODUTOS;i++){
-        printf("a");
-        if(strcmp(marcas[i].nome, " ")){
+        if(strcmp(marcas[i].nome, " ")==0){
             break;
         }else{
-            printf("%s %d", marcas[i].nome, marcas[i].quantidadeProdutos);
+            printf("%s %d\n", marcas[i].nome, marcas[i].quantidadeProdutos);
         }
     }
     calculaMediaTotal(produtos);
     for(i=0;i<QUANTIDADE_PRODUTOS;i++){
-        printf("b");
-        if(strcmp(marcas[i].nome, " ")){
+        if(strcmp(marcas[i].nome, " ")==0){
             break;
         }else{
-            printf("media %s %.2f", marcas[i].nome, marcas[i].precoSoma/marcas[i].quantidadeProdutos);
+            printf("media %s %.2f\n", marcas[i].nome, marcas[i].precoSoma/marcas[i].quantidadeProdutos);
         }
     }
 }
@@ -77,10 +75,6 @@ int main(int argc, char**argv[]){
         scanf("%s %s %f", produtosCadastrados[i].nome, produtosCadastrados[i].marca, &produtosCadastrados[i].preco);
         encontraMarca(produtosCadastrados[i], marcas);
     }
-    for(i=0;i<QUANTIDADE_PRODUTOS;i++){
-        printf("%s %d %f", marcas[i].nome, marcas[i].quantidadeProdutos, marcas[i].precoSoma);
-    }
-
     produzResultados(produtosCadastrados, marcas);
     
     return SUCESSO;
