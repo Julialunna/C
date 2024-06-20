@@ -3,10 +3,16 @@
 #define SUCESSO 0
 #define TAMANHO_MAXIMO_PESSOAS 4
 #define TAMANHO_MAXIMO_NOME 50
+typedef struct enderecoDados{
+    char rua[TAMANHO_MAXIMO_NOME];
+    unsigned int numero;
+    char estado[TAMANHO_MAXIMO_NOME];
+}enderecoDados;
 typedef struct dados{
     char nome[TAMANHO_MAXIMO_NOME];
     unsigned int idade;
     float salario;
+    enderecoDados endereco;
 }dados;
 void inicializaVetor(dados vetorDados[TAMANHO_MAXIMO_PESSOAS]){
     int i;
@@ -38,10 +44,10 @@ int achaRegistro(dados vetorDados[TAMANHO_MAXIMO_PESSOAS], char nomeRegistro[TAM
     return SUCESSO;
 }
 int main(int argc, char** argv[]){
-    char comando[10], nomeEntrada[TAMANHO_MAXIMO_NOME];
-    dados dadosPessoas[4];
-    int resultadoEspaco, idadeEntrada;
-    float salarioEntrada;
+    char comando[10];
+    dados dadosPessoas[4], dadosEntrada;
+    int resultadoEspaco;
+
 
     inicializaVetor(dadosPessoas);
     do{
@@ -49,21 +55,21 @@ int main(int argc, char** argv[]){
         fgets(comando, TAMANHO_MAXIMO_NOME, stdin);
         setbuf(stdin, NULL);
         if(strcmp(comando, "inserir\n")==0){
-            scanf("%s %d %f", nomeEntrada, &idadeEntrada, &salarioEntrada);
+            scanf("%s %d %f", dadosEntrada.nome, &dadosEntrada.idade, &dadosEntrada.salario);
             resultadoEspaco=confirmaSeTemEspaco(dadosPessoas);
            if(resultadoEspaco==-1){
             printf("Espaco insuficiente\n");
            }else{
 
-            strcpy(dadosPessoas[resultadoEspaco].nome, nomeEntrada);
-            dadosPessoas[resultadoEspaco].idade=idadeEntrada;
-            dadosPessoas[resultadoEspaco].salario=salarioEntrada;
+            strcpy(dadosPessoas[resultadoEspaco].nome, dadosEntrada.nome);
+            dadosPessoas[resultadoEspaco].idade=dadosEntrada.idade;
+            dadosPessoas[resultadoEspaco].salario=dadosEntrada.salario;
 
             printf("Registro %s %d %.2f inserido\n",  dadosPessoas[resultadoEspaco].nome, dadosPessoas[resultadoEspaco].idade, dadosPessoas[resultadoEspaco].salario);
            }
         }else if(strcmp(comando, "mostrar\n")==0){
-            scanf("%s", nomeEntrada);
-            achaRegistro(dadosPessoas, nomeEntrada);
+            scanf("%s", dadosEntrada.nome);
+            achaRegistro(dadosPessoas, dadosEntrada.nome);
         }
     }while(strcmp(comando, "inserir\n")==0||strcmp(comando, "mostrar\n")==0);
     
