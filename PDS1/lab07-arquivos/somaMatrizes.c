@@ -1,43 +1,46 @@
 #include <stdio.h>
 #include <stdlib.h>
+
 #define SUCESSO 0
 #define TAMANHO_MATRIZ 5
 #define TAMANHO_MAX_NOME 100
-int main(int argc, char**argv[]){
+
+int main(int argc, char** argv[]) {
     FILE *arquivoEntrada;
-    int matrizEntrada[TAMANHO_MATRIZ][TAMANHO_MATRIZ], indice=0, i=0,j=0, matrizParaArquivo[TAMANHO_MATRIZ][TAMANHO_MATRIZ], escrito=0;
+    unsigned int matrizEntrada1[TAMANHO_MATRIZ][TAMANHO_MATRIZ], matrizEntrada2[TAMANHO_MATRIZ][TAMANHO_MATRIZ], i, j, escrito=0;
+    
     char nomeArquivo[TAMANHO_MAX_NOME];
 
-
     scanf("%s", nomeArquivo);
-    arquivoEntrada=fopen(nomeArquivo, "r");
-    if(arquivoEntrada==NULL){
-        //printf("Erro na abertura do arquivo");
+    arquivoEntrada = fopen(nomeArquivo, "r");
+    if (arquivoEntrada == NULL) {
+       
         exit(1);
     }
-    /*for(i=0;i<5;i++){
-        printf("a");
-        scanf("%d %d %d %d %d", matrizParaArquivo[i]);
+ 
 
-    }
-    fwrite(matrizParaArquivo, sizeof(int),   5*5, arquivoEntrada);*/
-
-    //rewind(arquivoEntrada);
-    while(1){
-
-        fread(matrizEntrada[indice], sizeof(int), 5, arquivoEntrada);
-        printf("aa%d\n", matrizEntrada[indice][indice]);
-        //printf("%c", letraArquivo);
-        if(feof(arquivoEntrada)){
-            break;
+    for (i = 0; i < TAMANHO_MATRIZ; i++) {
+         for (j = 0; j < TAMANHO_MATRIZ; j++) {
+           fscanf(arquivoEntrada, "%d", &matrizEntrada1[i][j]);
         }
-        indice++;
+        
     }
-    for(indice=0;indice<5;indice++){
-        for(j=0;j<5;j++){
-            printf("%d", matrizEntrada[indice][j]);
+     for (i = 0; i < TAMANHO_MATRIZ; i++) {
+        for (j = 0; j < TAMANHO_MATRIZ; j++) {
+           fscanf(arquivoEntrada, "%d", &matrizEntrada2[i][j]);
+        }
+    }
+
+    fclose(arquivoEntrada);
+
+    for (i = 0; i < TAMANHO_MATRIZ; i++) {
+        for (j = 0; j < TAMANHO_MATRIZ; j++) {
+            printf("%u ", matrizEntrada1[i][j]+matrizEntrada2[i][j]);
         }
         printf("\n");
     }
+     
+
+
     return SUCESSO;
 }
