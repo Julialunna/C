@@ -1,5 +1,6 @@
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 #define SUCESSO 0
 #define TAMANHO_MAX_NOME 50
 int main(int argc, char*argv[]){

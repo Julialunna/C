@@ -1,12 +1,17 @@
 #include <stdio.h>
 #include <stdlib.h>
+#include<string.h>
 #define SUCESSO 0
 #define TAMANHO_MAX_NOME 50
 int main(int argc, char*argv[]){
     FILE *arquivoEntrada;
-    const char *nomeArquivo= argv[1];
-    int quantLetras=0;
+    char nomeArquivo[50];
+    unsigned int quantLetras=0, escrito=0;
     char letraArquivo;
+    char entrada[100];
+
+
+    scanf("%s", nomeArquivo);
     arquivoEntrada=fopen(nomeArquivo, "rb");
     
     if(arquivoEntrada==NULL){
@@ -15,6 +20,7 @@ int main(int argc, char*argv[]){
     }
     while(1){
         letraArquivo=fgetc(arquivoEntrada);
+        //printf("%c", letraArquivo);
         if(feof(arquivoEntrada)){
             break;
         }
@@ -26,3 +32,6 @@ int main(int argc, char*argv[]){
     fclose(arquivoEntrada);
     return SUCESSO;
 }
+    /*escrito=fwrite(entrada, sizeof(char), strlen(entrada), arquivoEntrada);
+    printf("%d %s", escrito, entrada);
+    rewind(arquivoEntrada);*/
