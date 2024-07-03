@@ -3,3 +3,10 @@
 int main(int argc, char**argv[]){
     return SUCESSO;
 }
+
+// uso de arquivo 
+ 
+    if(arquivoEntrada==NULL){
+        //printf("Erro na abertura do arquivo");
+        exit(1);
+    }
