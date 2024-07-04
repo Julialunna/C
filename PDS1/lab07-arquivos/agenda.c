@@ -20,9 +20,11 @@ typedef struct pessoa {
     char telefone[TAMANHO_MAX_TELEFONE];
 } pessoa;
 
-void imprimePessoas(pessoa pessoasAgenda[TAMANHO_AGENDA], int indice){
-    for (int i = 0; i < indice; i++) {
+void imprimePessoas(pessoa pessoasAgenda[TAMANHO_AGENDA]){
+    int i=0;
+    while(strcmp(pessoasAgenda[i].nome, "")!=0) {
         printf("%s %d %s\n", pessoasAgenda[i].nome, pessoasAgenda[i].idade, pessoasAgenda[i].telefone);
+        i++;
     }
 }
 int confereEspaco(pessoa pessoasAgenda[TAMANHO_AGENDA]){
@@ -47,19 +49,39 @@ void inserirPessoa(pessoa pessoasAgenda[TAMANHO_AGENDA], char nomeArquivo[TAMANH
         fclose(arquivo);
         arquivo= fopen(nomeArquivo, "a+b");
         fwrite(&pessoasAgenda[indiceDisponivel], sizeof(pessoa), 1, arquivo);
+        fclose(arquivo);
     }
 }
-int exibirPessoa(pessoa pessoasAgenda[TAMANHO_AGENDA], char nome[TAMANHO_MAX_NOME]){
+int achaPessoa(pessoa pessoasAgenda[TAMANHO_AGENDA], char nome[TAMANHO_MAX_NOME]){
     int indice=0;
-    while(strcmp(pessoasAgenda[indice].nome, "")!=0){
+     while(strcmp(pessoasAgenda[indice].nome, "")!=0){
         if(strcmp(pessoasAgenda[indice].nome, nome)==0){
-            printf("Registro %s %d %s exibido", pessoasAgenda[indice].nome, pessoasAgenda[indice].idade, pessoasAgenda[indice].telefone);
-            return SUCESSO;
+           
+            return indice;
         }
         indice++;
     }
-    printf("Registro %s invalido", nome);
-    return SUCESSO;    
+    return -1;
+}
+void exibirPessoa(pessoa pessoasAgenda[TAMANHO_AGENDA], char nome[TAMANHO_MAX_NOME]){
+    int indice=0;
+    indice = achaPessoa(pessoasAgenda, nome);
+    if(indice!= -1){
+        printf("Registro %s %d %s exibido", pessoasAgenda[indice].nome, pessoasAgenda[indice].idade, pessoasAgenda[indice].telefone);
+    }else{
+        printf("Registro %s invalido", nome);
+    }
+       
+}
+void excluirPessoa(pessoa pessoasAgenda[TAMANHO_AGENDA], char nome[TAMANHO_MAX_NOME], FILE *arquivo){
+    int indice, i;
+    pessoa pessoaTemporaria;
+    indice = achaPessoa(pessoasAgenda, nome);
+    for(i=indice;strcmp(pessoasAgenda[i].nome, "")!=0;i++){
+        pessoasAgenda[i]=pessoasAgenda[i+1];
+    }
+    imprimePessoas(pessoasAgenda);
+
 }
 void lerArquivo(pessoa pessoasAgenda[TAMANHO_AGENDA], FILE *arquivo) {
     int indice = 0;
@@ -67,7 +89,7 @@ void lerArquivo(pessoa pessoasAgenda[TAMANHO_AGENDA], FILE *arquivo) {
     while (fread(&pessoasAgenda[indice], sizeof(pessoa), 1, arquivo) == 1) {
         indice++;
     }
-    imprimePessoas(pessoasAgenda, indice);
+    imprimePessoas(pessoasAgenda);
 }
 void inicializaVetor(pessoa pessoasAgenda[TAMANHO_AGENDA]){
     int i;
@@ -105,7 +127,8 @@ int main(int argc, char *argv[]) {
         } else if (strcmp(comando, "Alterar") == 0) {
             
         } else if (strcmp(comando, "Excluir") == 0) {
-
+            scanf("%s", nomePessoa);
+            excluirPessoa(pessoasAgenda, nomePessoa, arquivo);
         }
     }
 
