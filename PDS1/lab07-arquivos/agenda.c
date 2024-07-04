@@ -6,13 +6,7 @@
 #define TAMANHO_MAX_NOME 50
 #define TAMANHO_MAX_TELEFONE 20
 #define TAMANHO_COMANDO 10
-#define TAMANHO_AGENDA 5
-
-typedef struct pessoa {
-    char nome[TAMANHO_MAX_NOME];
-    int idade;
-    char telefone[TAMANHO_MAX_TELEFONE];
-} pessoa;
+#define TAMANHO_AGENDA 10
 
 /*void escreverArquivo(pessoa pessoasAgenda[TAMANHO_AGENDA], FILE *arquivo) {
     pessoa pessoaLida;
@@ -20,6 +14,17 @@ typedef struct pessoa {
     printf("%s %d %s\n", pessoaLida.nome, pessoaLida.idade, pessoaLida.telefone);
     fwrite(&pessoaLida, sizeof(pessoa), 1, arquivo);
 }*/
+typedef struct pessoa {
+    char nome[TAMANHO_MAX_NOME];
+    int idade;
+    char telefone[TAMANHO_MAX_TELEFONE];
+} pessoa;
+
+void imprimePessoas(pessoa pessoasAgenda[TAMANHO_AGENDA], int indice){
+    for (int i = 0; i < indice; i++) {
+        printf("%s %d %s\n", pessoasAgenda[i].nome, pessoasAgenda[i].idade, pessoasAgenda[i].telefone);
+    }
+}
 int confereEspaco(pessoa pessoasAgenda[TAMANHO_AGENDA]){
     int i =0;
     for(i=0;i<TAMANHO_AGENDA;i++){
@@ -29,7 +34,7 @@ int confereEspaco(pessoa pessoasAgenda[TAMANHO_AGENDA]){
     }
     return -1;
 }
-void inserirPessoa(pessoa pessoasAgenda[TAMANHO_AGENDA]) {
+void inserirPessoa(pessoa pessoasAgenda[TAMANHO_AGENDA], char nomeArquivo[TAMANHO_MAX_NOME], FILE *arquivo) {
     pessoa pessoaLida;
     int indiceDisponivel;
     scanf("%s %d %s", pessoaLida.nome, &pessoaLida.idade, pessoaLida.telefone);
@@ -39,12 +44,22 @@ void inserirPessoa(pessoa pessoasAgenda[TAMANHO_AGENDA]) {
     }else{
         pessoasAgenda[indiceDisponivel]=pessoaLida;
         printf("Registro %s %d %s inserido\n", pessoasAgenda[indiceDisponivel].nome, pessoasAgenda[indiceDisponivel].idade, pessoasAgenda[indiceDisponivel].telefone);
+        fclose(arquivo);
+        arquivo= fopen(nomeArquivo, "a+b");
+        fwrite(&pessoasAgenda[indiceDisponivel], sizeof(pessoa), 1, arquivo);
     }
 }
-void imprimePessoas(pessoa pessoasAgenda[TAMANHO_AGENDA], int indice){
-    for (int i = 0; i < indice; i++) {
-        printf("%s %d %s\n", pessoasAgenda[i].nome, pessoasAgenda[i].idade, pessoasAgenda[i].telefone);
+int exibirPessoa(pessoa pessoasAgenda[TAMANHO_AGENDA], char nome[TAMANHO_MAX_NOME]){
+    int indice=0;
+    while(strcmp(pessoasAgenda[indice].nome, "")!=0){
+        if(strcmp(pessoasAgenda[indice].nome, nome)==0){
+            printf("Registro %s %d %s exibido", pessoasAgenda[indice].nome, pessoasAgenda[indice].idade, pessoasAgenda[indice].telefone);
+            return SUCESSO;
+        }
+        indice++;
     }
+    printf("Registro %s invalido", nome);
+    return SUCESSO;    
 }
 void lerArquivo(pessoa pessoasAgenda[TAMANHO_AGENDA], FILE *arquivo) {
     int indice = 0;
@@ -66,7 +81,7 @@ void inicializaVetor(pessoa pessoasAgenda[TAMANHO_AGENDA]){
 
 int main(int argc, char *argv[]) {
     pessoa pessoasAgenda[TAMANHO_AGENDA];
-    char nomeArquivo[TAMANHO_MAX_NOME], comando[TAMANHO_COMANDO];
+    char nomeArquivo[TAMANHO_MAX_NOME], comando[TAMANHO_COMANDO], nomePessoa[TAMANHO_MAX_NOME];
     FILE *arquivo;
 
     scanf("%s", nomeArquivo);
@@ -82,9 +97,11 @@ int main(int argc, char *argv[]) {
 
     while (scanf("%s", comando) != EOF) {
         if (strcmp(comando, "Inserir") == 0) {
-            inserirPessoa(pessoasAgenda);
+            inserirPessoa(pessoasAgenda, nomeArquivo, arquivo);
         } else if (strcmp(comando, "Exibir") == 0) {
-            lerArquivo(pessoasAgenda, arquivo);
+            scanf("%s", nomePessoa);
+            exibirPessoa(pessoasAgenda, nomePessoa);
+            //lerArquivo(pessoasAgenda, arquivo);
         } else if (strcmp(comando, "Alterar") == 0) {
             
         } else if (strcmp(comando, "Excluir") == 0) {
