@@ -1,7 +1,6 @@
 #include <stdio.h>
 #include <string.h>
 #include <stdlib.h>
-
 #define TAMANHO_NOME_ARQUIVO 30
 #define TAMANHO_NOME_PRODUTO 100
 #define TAMANHO_ESTADO 20
@@ -16,8 +15,8 @@ typedef struct Produto{
 void imprimeProdutos(Produto* produtos, int quant){
     int i;
     for(i=0;i<quant;i++){
-        printf("codigo:%d\nnome:%squantidade:%d\npreco:%.2lf\nestado:%s", produtos[i].codigo, produtos[i].nome, produtos[i].quantidade, produtos[i].preco, produtos[i].estado);
-        
+        //printf("codigo:%d\nnome:%squantidade:%d\npreco:%.2lf\nestado:%s", produtos[i].codigo, produtos[i].nome, produtos[i].quantidade, produtos[i].preco, produtos[i].estado);
+        printf("codigo:%dquantidade:%d\n", produtos[i].codigo, produtos[i].quantidade);
     }
 }
 //garante que todas as strings de estado tenham uma  quabra de linha
@@ -90,7 +89,15 @@ int pesquisaPorCodigo(Produto* produtos, int codigo, int quantidadeProdutos){
 }
 
 int descobreAqueleComMenorQuantidade(Produto* produtos,int quantidadeProdutos){
-    int i, menorQuantidade=;
+    imprimeProdutos(produtos, quantidadeProdutos);
+    int i, indiceDoMenorQuantidade;
+    indiceDoMenorQuantidade=0;
+    for(i=0;i<quantidadeProdutos;i++){
+        if(produtos[i].quantidade<produtos[indiceDoMenorQuantidade].quantidade){
+            indiceDoMenorQuantidade=i;
+        }
+    }
+    return indiceDoMenorQuantidade;
 }
 
 int main(int argc, char*argv[]){
