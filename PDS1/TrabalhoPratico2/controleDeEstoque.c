@@ -15,8 +15,8 @@ typedef struct Produto{
 void imprimeProdutos(Produto* produtos, int quant){
     int i;
     for(i=0;i<quant;i++){
-        //printf("codigo:%d\nnome:%squantidade:%d\npreco:%.2lf\nestado:%s", produtos[i].codigo, produtos[i].nome, produtos[i].quantidade, produtos[i].preco, produtos[i].estado);
-        printf("codigo:%dquantidade:%d\n", produtos[i].codigo, produtos[i].quantidade);
+        printf("%d\n%s%d\n%.2lf\n%s", produtos[i].codigo, produtos[i].nome, produtos[i].quantidade, produtos[i].preco, produtos[i].estado);
+        //printf("codigo:%dquantidade:%d\n", produtos[i].codigo, produtos[i].quantidade);
     }
 }
 //garante que todas as strings de estado tenham uma  quabra de linha
@@ -100,6 +100,35 @@ int descobreAqueleComMenorQuantidade(Produto* produtos,int quantidadeProdutos){
     return indiceDoMenorQuantidade;
 }
 
+void imprimeProdutosPorEstadoAlfabeticamente(char estado[TAMANHO_ESTADO], Produto* produtos, int quantProdutos){
+    int quantProdutosEstado=0, i, j=0, ultimoIndice=0;
+    Produto* produtosDoEstado;
+    //coloca um \n em estado, uma vez que as string de estado também possuem
+    estado[strlen(estado)]='\n';
+    estado[strlen(estado)+1]='\0';
+    //descoberta da quantidade de produtos para alocar memoria
+    for(i=0;i<quantProdutos;i++){
+        if(strcmp(produtos[i].estado, estado)==0){
+            quantProdutosEstado++;
+        }
+    }
+    produtosDoEstado=(Produto*)malloc(quantProdutosEstado*sizeof(Produto));
+    for(i=0;i<quantProdutosEstado;i++){
+        for(j=ultimoIndice;j<quantProdutos;j++){
+            if(strcmp(produtos[j].estado,estado)==0){
+                produtosDoEstado[i]=produtos[j];
+                ultimoIndice++;
+                
+                break;
+            }
+            ultimoIndice++;
+        }
+    }
+
+    ordenacaoAlfabetica(produtosDoEstado, quantProdutosEstado);
+    imprimeProdutos(produtosDoEstado, quantProdutosEstado);
+}
+
 int main(int argc, char*argv[]){
     char nomeArquivo[TAMANHO_NOME_ARQUIVO];
     FILE *arquivoEstoque;
@@ -128,7 +157,7 @@ int main(int argc, char*argv[]){
         if(indiceProdutoAchado==-1){
             printf("Nao existe esse produto no estoque");
         }else{
-            printf("codigo:%d\nnome:%squantidade:%d\npreco:%.2lf\nestado:%s", produtosEmEstoque[indiceProdutoAchado].codigo, produtosEmEstoque[indiceProdutoAchado].nome, produtosEmEstoque[indiceProdutoAchado].quantidade, produtosEmEstoque[indiceProdutoAchado].preco, produtosEmEstoque[indiceProdutoAchado].estado);
+            printf("%d\n%s%d\n%.2lf\n%s", produtosEmEstoque[indiceProdutoAchado].codigo, produtosEmEstoque[indiceProdutoAchado].nome, produtosEmEstoque[indiceProdutoAchado].quantidade, produtosEmEstoque[indiceProdutoAchado].preco, produtosEmEstoque[indiceProdutoAchado].estado);
         }
         break;
     case 3:
@@ -136,7 +165,7 @@ int main(int argc, char*argv[]){
         printf("codigo:%d\nnome:%squantidade:%d\npreco:%.2lf\nestado:%s", produtosEmEstoque[indiceProdutoAchado].codigo, produtosEmEstoque[indiceProdutoAchado].nome, produtosEmEstoque[indiceProdutoAchado].quantidade, produtosEmEstoque[indiceProdutoAchado].preco, produtosEmEstoque[indiceProdutoAchado].estado);
         break;
     case 4:
-
+        imprimeProdutosPorEstadoAlfabeticamente(argv[3], produtosEmEstoque, quantProdutos);
         break;
     case 5:
 
