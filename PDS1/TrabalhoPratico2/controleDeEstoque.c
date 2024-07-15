@@ -16,7 +16,6 @@ void imprimeProdutos(Produto* produtos, int quant){
     int i;
     for(i=0;i<quant;i++){
         printf("%d\n%s%d\n%.2lf\n%s", produtos[i].codigo, produtos[i].nome, produtos[i].quantidade, produtos[i].preco, produtos[i].estado);
-        //printf("codigo:%dquantidade:%d\n", produtos[i].codigo, produtos[i].quantidade);
     }
 }
 //garante que todas as strings de estado tenham uma  quabra de linha
@@ -100,7 +99,7 @@ int descobreAqueleComMenorQuantidade(Produto* produtos,int quantidadeProdutos){
     return indiceDoMenorQuantidade;
 }
 
-void imprimeProdutosPorEstadoAlfabeticamente(char estado[TAMANHO_ESTADO], Produto* produtos, int quantProdutos){
+Produto* retornaVetorComProdutosDoEstado(char estado[TAMANHO_ESTADO], Produto* produtos, int quantProdutos){
     int quantProdutosEstado=0, i, j=0, ultimoIndice=0;
     Produto* produtosDoEstado;
     //coloca um \n em estado, uma vez que as string de estado também possuem
@@ -118,12 +117,16 @@ void imprimeProdutosPorEstadoAlfabeticamente(char estado[TAMANHO_ESTADO], Produt
             if(strcmp(produtos[j].estado,estado)==0){
                 produtosDoEstado[i]=produtos[j];
                 ultimoIndice++;
-                
                 break;
             }
             ultimoIndice++;
         }
     }
+    return produtosDoEstado;
+}
+//função que cria um vetor com os produtos de cada estado e ordena eles em odem afabética
+void imprimeProdutosPorEstadoAlfabeticamente(char estado[TAMANHO_ESTADO], Produto* produtos, int quantProdutos){
+    Produto* produtosDoEstado;
 
     ordenacaoAlfabetica(produtosDoEstado, quantProdutosEstado);
     imprimeProdutos(produtosDoEstado, quantProdutosEstado);
