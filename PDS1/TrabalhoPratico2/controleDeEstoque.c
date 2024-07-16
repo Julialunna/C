@@ -44,7 +44,7 @@ void LeProdutosDoArquivo(Produto* produtos, int quantidadeProdutos, FILE* arquiv
 
     }
 }
-//Ordena o vetor de produtos alfabeticamente antes de imprimir no arquivo de saída
+//Ordena o vetor de produtos alfabeticamente usando o algoritmo selection sort
 void ordenacaoAlfabetica(Produto* produtos, int quantidadeProdutos){
     int i, j;
     Produto temp;
@@ -77,6 +77,7 @@ void geraRelatorioDeEstoque(Produto* produtos, int quantidadeProdutos, char nome
         fprintf(arquivoRelatorio,"%.2lf\n", produtos[i].preco);
         fputs(produtos[i].estado, arquivoRelatorio);
     }
+    fclose(arquivoRelatorio);
 }
 //função que acha um produto por código de um array de produtos
 int pesquisaPorCodigo(Produto* produtos, int codigo, int quantidadeProdutos){
@@ -132,6 +133,7 @@ void imprimeProdutosPorEstadoAlfabeticamente(char estado[TAMANHO_ESTADO], Produt
     produtosDoEstadoAlafabetico=retornaProdutoPorEstado(estado, produtos, quantProdutos, &quantProdutosEstado);
     ordenacaoAlfabetica(produtosDoEstadoAlafabetico, quantProdutosEstado);
     imprimeProdutos(produtosDoEstadoAlafabetico, quantProdutosEstado);
+    free(produtosDoEstadoAlafabetico);
 }
 //função que separa os produtos por estado e depois vê a menor quantidade
 void imprimeMenorQuantidadePorEstado(char estado[TAMANHO_ESTADO], Produto* produtos, int quantProdutos){
@@ -140,6 +142,7 @@ void imprimeMenorQuantidadePorEstado(char estado[TAMANHO_ESTADO], Produto* produ
     produtosDoEstado=retornaProdutoPorEstado(estado, produtos, quantProdutos, &quantProdutosEstado);
     indiceDoMenorQuantidade=descobreAqueleComMenorQuantidade(produtosDoEstado, quantProdutosEstado);
     imprimeUmProduto(produtosDoEstado[indiceDoMenorQuantidade]);
+    free(produtosDoEstado);
 }
 //função que calcula a quantidade total de itens com base na quantidade de cada produto
 int calculaQuantidadeTotalDeItens(Produto *produtos, int quantProdutos){
