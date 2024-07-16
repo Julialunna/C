@@ -16,8 +16,11 @@ void imprimeProdutos(Produto* produtos, int quant){
     int i;
     for(i=0;i<quant;i++){
         printf("%d\n%s%d\n%.2lf\n%s", produtos[i].codigo, produtos[i].nome, produtos[i].quantidade, produtos[i].preco, produtos[i].estado);
-        //printf("codigo:%dquantidade:%d\n", produtos[i].codigo, produtos[i].quantidade);
+
     }
+}
+void imprimeUmProduto(Produto produtoAchado){
+    printf("%d\n%s%d\n%.2lf\n%s", produtoAchado.codigo, produtoAchado.nome, produtoAchado.quantidade, produtoAchado.preco, produtoAchado.estado);
 }
 //garante que todas as strings de estado tenham uma  quabra de linha
 void garanteQubraDeLinha(char string[TAMANHO_ESTADO]){
@@ -48,11 +51,11 @@ void ordenacaoAlfabetica(Produto* produtos, int quantidadeProdutos){
     int i, j;
     Produto temp;
     for(i=0;i<quantidadeProdutos-1;i++){
-        for (j=0;j<quantidadeProdutos-i-1;j++){
-            if(strcmp(produtos[j].nome, produtos[j+1].nome)>0){
-                temp=produtos[j];
-                produtos[j]=produtos[j+1];
-                produtos[j+1]=temp;
+        for (j=i+1;j<quantidadeProdutos;j++){
+            if(strcmp(produtos[i].nome, produtos[j].nome)>0){
+                temp=produtos[i];
+                produtos[i]=produtos[j];
+                produtos[j]=temp;
             }
         }
     }
@@ -89,7 +92,6 @@ int pesquisaPorCodigo(Produto* produtos, int codigo, int quantidadeProdutos){
 }
 
 int descobreAqueleComMenorQuantidade(Produto* produtos,int quantidadeProdutos){
-    imprimeProdutos(produtos, quantidadeProdutos);
     int i, indiceDoMenorQuantidade;
     indiceDoMenorQuantidade=0;
     for(i=0;i<quantidadeProdutos;i++){
@@ -127,21 +129,34 @@ Produto* retornaProdutoPorEstado(char estado[TAMANHO_ESTADO], Produto* produtos,
 }
 
 void imprimeProdutosPorEstadoAlfabeticamente(char estado[TAMANHO_ESTADO], Produto* produtos, int quantProdutos){
-    int quantProdutosEstado=0, i, j=0;
+    int quantProdutosEstado=0;
     Produto* produtosDoEstadoAlafabetico;
-   
-  
     //descoberta da quantidade de produtos para alocar memoria
    
     produtosDoEstadoAlafabetico=retornaProdutoPorEstado(estado, produtos, quantProdutos, &quantProdutosEstado);
     ordenacaoAlfabetica(produtosDoEstadoAlafabetico, quantProdutosEstado);
     imprimeProdutos(produtosDoEstadoAlafabetico, quantProdutosEstado);
 }
+void imprimeMenorQuantidadePorEstado(char estado[TAMANHO_ESTADO], Produto* produtos, int quantProdutos){
+    int quantProdutosEstado=0, indiceDoMenorQuantidade=0;
+    Produto* produtosDoEstado;
+    produtosDoEstado=retornaProdutoPorEstado(estado, produtos, quantProdutos, &quantProdutosEstado);
+    indiceDoMenorQuantidade=descobreAqueleComMenorQuantidade(produtosDoEstado, quantProdutosEstado);
+    imprimeUmProduto(produtosDoEstado[indiceDoMenorQuantidade]);
+}
+
+int calculaQuantidadeTotalDeItens(Produto *produtos, int quantProdutos){
+    int quantTotal=0, i;
+    for(i=0;i<quantProdutos;i++){
+        quantTotal=quantTotal+produtos[i].quantidade;
+    }
+    return quantTotal;
+}
 
 int main(int argc, char*argv[]){
     char nomeArquivo[TAMANHO_NOME_ARQUIVO];
     FILE *arquivoEstoque;
-    int quantProdutos, indiceProdutoAchado;
+    int quantProdutos, indiceProdutoAchado, quantTotal=0;
     Produto *produtosEmEstoque;
     //recebendo parâmetros 
     strcpy(nomeArquivo, argv[1]);
@@ -166,18 +181,22 @@ int main(int argc, char*argv[]){
         if(indiceProdutoAchado==-1){
             printf("Nao existe esse produto no estoque");
         }else{
-            printf("%d\n%s%d\n%.2lf\n%s", produtosEmEstoque[indiceProdutoAchado].codigo, produtosEmEstoque[indiceProdutoAchado].nome, produtosEmEstoque[indiceProdutoAchado].quantidade, produtosEmEstoque[indiceProdutoAchado].preco, produtosEmEstoque[indiceProdutoAchado].estado);
+            imprimeUmProduto(produtosEmEstoque[indiceProdutoAchado]);
         }
         break;
     case 3:
         indiceProdutoAchado=descobreAqueleComMenorQuantidade(produtosEmEstoque, quantProdutos);
-        printf("codigo:%d\nnome:%squantidade:%d\npreco:%.2lf\nestado:%s", produtosEmEstoque[indiceProdutoAchado].codigo, produtosEmEstoque[indiceProdutoAchado].nome, produtosEmEstoque[indiceProdutoAchado].quantidade, produtosEmEstoque[indiceProdutoAchado].preco, produtosEmEstoque[indiceProdutoAchado].estado);
+        imprimeUmProduto(produtosEmEstoque[indiceProdutoAchado]);
         break;
     case 4:
         imprimeProdutosPorEstadoAlfabeticamente(argv[3], produtosEmEstoque, quantProdutos);
         break;
     case 5:
-
+        imprimeMenorQuantidadePorEstado(argv[3], produtosEmEstoque, quantProdutos);
+        break;
+    case 6:
+        quantTotal=calculaQuantidadeTotalDeItens(produtosEmEstoque, quantProdutos);
+        printf("%d\n", quantTotal);
         break;
     default:
         break;
