@@ -18,6 +18,9 @@ void imprimeProdutos(Produto* produtos, int quant){
         printf("%d\n%s%d\n%.2lf\n%s", produtos[i].codigo, produtos[i].nome, produtos[i].quantidade, produtos[i].preco, produtos[i].estado);
     }
 }
+void imprimeUmProduto(Produto produtoAchado){
+    printf("%d\n%s%d\n%.2lf\n%s", produtoAchado.codigo, produtoAchado.nome, produtoAchado.quantidade, produtoAchado.preco, produtoAchado.estado);
+}
 //garante que todas as strings de estado tenham uma  quabra de linha
 void garanteQubraDeLinha(char string[TAMANHO_ESTADO]){
     int i;
@@ -40,18 +43,17 @@ void LeProdutosDoArquivo(Produto* produtos, int quantidadeProdutos, FILE* arquiv
         garanteQubraDeLinha(produtos[i].estado);
 
     }
-    //imprimeArquivo(produtos, quantidadeProdutos);
 }
-//Ordena o vetor de produtos alfabeticamente antes de imprimir no arquivo de saída
+//Ordena o vetor de produtos alfabeticamente usando o algoritmo selection sort
 void ordenacaoAlfabetica(Produto* produtos, int quantidadeProdutos){
     int i, j;
     Produto temp;
     for(i=0;i<quantidadeProdutos-1;i++){
-        for (j=0;j<quantidadeProdutos-i-1;j++){
-            if(strcmp(produtos[j].nome, produtos[j+1].nome)>0){
-                temp=produtos[j];
-                produtos[j]=produtos[j+1];
-                produtos[j+1]=temp;
+        for (j=i+1;j<quantidadeProdutos;j++){
+            if(strcmp(produtos[i].nome, produtos[j].nome)>0){
+                temp=produtos[i];
+                produtos[i]=produtos[j];
+                produtos[j]=temp;
             }
         }
     }
@@ -75,8 +77,9 @@ void geraRelatorioDeEstoque(Produto* produtos, int quantidadeProdutos, char nome
         fprintf(arquivoRelatorio,"%.2lf\n", produtos[i].preco);
         fputs(produtos[i].estado, arquivoRelatorio);
     }
+    fclose(arquivoRelatorio);
 }
-
+//função que acha um produto por código de um array de produtos
 int pesquisaPorCodigo(Produto* produtos, int codigo, int quantidadeProdutos){
     int i;
     for(i=0;i<quantidadeProdutos;i++){
@@ -86,9 +89,8 @@ int pesquisaPorCodigo(Produto* produtos, int codigo, int quantidadeProdutos){
     }
     return -1;
 }
-
+//função que descobre o produto com menor quantidade de um array de produtos
 int descobreAqueleComMenorQuantidade(Produto* produtos,int quantidadeProdutos){
-    imprimeProdutos(produtos, quantidadeProdutos);
     int i, indiceDoMenorQuantidade;
     indiceDoMenorQuantidade=0;
     for(i=0;i<quantidadeProdutos;i++){
@@ -98,22 +100,21 @@ int descobreAqueleComMenorQuantidade(Produto* produtos,int quantidadeProdutos){
     }
     return indiceDoMenorQuantidade;
 }
-
-Produto* retornaVetorComProdutosDoEstado(char estado[TAMANHO_ESTADO], Produto* produtos, int quantProdutos){
-    int quantProdutosEstado=0, i, j=0, ultimoIndice=0;
+//função que separa os produtos de acordo com o estado dado
+Produto* retornaProdutoPorEstado(char estado[TAMANHO_ESTADO], Produto* produtos, int quantProdutos, int* quantProdutosEstado){
+    int i, j=0, ultimoIndice=0, tamanhoEstado=strlen(estado);
     Produto* produtosDoEstado;
     //coloca um \n em estado, uma vez que as string de estado também possuem
-    estado[strlen(estado)]='\n';
-    estado[strlen(estado)+1]='\0';
-    //descoberta da quantidade de produtos para alocar memoria
-    for(i=0;i<quantProdutos;i++){
+    estado[tamanhoEstado]='\n';
+    estado[tamanhoEstado+1]='\0';
+     for(i=0;i<quantProdutos;i++){
         if(strcmp(produtos[i].estado, estado)==0){
-            quantProdutosEstado++;
+            (*quantProdutosEstado)++;
         }
     }
-    produtosDoEstado=(Produto*)malloc(quantProdutosEstado*sizeof(Produto));
-    for(i=0;i<quantProdutosEstado;i++){
-        for(j=ultimoIndice;j<quantProdutos;j++){
+    produtosDoEstado=(Produto*)malloc(*quantProdutosEstado*sizeof(Produto));
+    for(i=0;i<*quantProdutosEstado;i++){
+        for(j=ultimoIndice;j<quantProdutos;j++){;
             if(strcmp(produtos[j].estado,estado)==0){
                 produtosDoEstado[i]=produtos[j];
                 ultimoIndice++;
@@ -124,18 +125,38 @@ Produto* retornaVetorComProdutosDoEstado(char estado[TAMANHO_ESTADO], Produto* p
     }
     return produtosDoEstado;
 }
-//função que cria um vetor com os produtos de cada estado e ordena eles em odem afabética
+//função que separa produtos por estado e depois ordena alfabeticamente
 void imprimeProdutosPorEstadoAlfabeticamente(char estado[TAMANHO_ESTADO], Produto* produtos, int quantProdutos){
+    int quantProdutosEstado=0;
+    Produto* produtosDoEstadoAlafabetico;
+    //descoberta da quantidade de produtos para alocar memoria
+    produtosDoEstadoAlafabetico=retornaProdutoPorEstado(estado, produtos, quantProdutos, &quantProdutosEstado);
+    ordenacaoAlfabetica(produtosDoEstadoAlafabetico, quantProdutosEstado);
+    imprimeProdutos(produtosDoEstadoAlafabetico, quantProdutosEstado);
+    free(produtosDoEstadoAlafabetico);
+}
+//função que separa os produtos por estado e depois vê a menor quantidade
+void imprimeMenorQuantidadePorEstado(char estado[TAMANHO_ESTADO], Produto* produtos, int quantProdutos){
+    int quantProdutosEstado=0, indiceDoMenorQuantidade=0;
     Produto* produtosDoEstado;
-
-    ordenacaoAlfabetica(produtosDoEstado, quantProdutosEstado);
-    imprimeProdutos(produtosDoEstado, quantProdutosEstado);
+    produtosDoEstado=retornaProdutoPorEstado(estado, produtos, quantProdutos, &quantProdutosEstado);
+    indiceDoMenorQuantidade=descobreAqueleComMenorQuantidade(produtosDoEstado, quantProdutosEstado);
+    imprimeUmProduto(produtosDoEstado[indiceDoMenorQuantidade]);
+    free(produtosDoEstado);
+}
+//função que calcula a quantidade total de itens com base na quantidade de cada produto
+int calculaQuantidadeTotalDeItens(Produto *produtos, int quantProdutos){
+    int quantTotal=0, i;
+    for(i=0;i<quantProdutos;i++){
+        quantTotal=quantTotal+produtos[i].quantidade;
+    }
+    return quantTotal;
 }
 
 int main(int argc, char*argv[]){
     char nomeArquivo[TAMANHO_NOME_ARQUIVO];
     FILE *arquivoEstoque;
-    int quantProdutos, indiceProdutoAchado;
+    int quantProdutos, indiceProdutoAchado, quantTotal=0;
     Produto *produtosEmEstoque;
     //recebendo parâmetros 
     strcpy(nomeArquivo, argv[1]);
@@ -160,23 +181,26 @@ int main(int argc, char*argv[]){
         if(indiceProdutoAchado==-1){
             printf("Nao existe esse produto no estoque");
         }else{
-            printf("%d\n%s%d\n%.2lf\n%s", produtosEmEstoque[indiceProdutoAchado].codigo, produtosEmEstoque[indiceProdutoAchado].nome, produtosEmEstoque[indiceProdutoAchado].quantidade, produtosEmEstoque[indiceProdutoAchado].preco, produtosEmEstoque[indiceProdutoAchado].estado);
+            imprimeUmProduto(produtosEmEstoque[indiceProdutoAchado]);
         }
         break;
     case 3:
         indiceProdutoAchado=descobreAqueleComMenorQuantidade(produtosEmEstoque, quantProdutos);
-        printf("codigo:%d\nnome:%squantidade:%d\npreco:%.2lf\nestado:%s", produtosEmEstoque[indiceProdutoAchado].codigo, produtosEmEstoque[indiceProdutoAchado].nome, produtosEmEstoque[indiceProdutoAchado].quantidade, produtosEmEstoque[indiceProdutoAchado].preco, produtosEmEstoque[indiceProdutoAchado].estado);
+        imprimeUmProduto(produtosEmEstoque[indiceProdutoAchado]);
         break;
     case 4:
         imprimeProdutosPorEstadoAlfabeticamente(argv[3], produtosEmEstoque, quantProdutos);
         break;
     case 5:
-
+        imprimeMenorQuantidadePorEstado(argv[3], produtosEmEstoque, quantProdutos);
+        break;
+    case 6:
+        quantTotal=calculaQuantidadeTotalDeItens(produtosEmEstoque, quantProdutos);
+        printf("%d\n", quantTotal);
         break;
     default:
         break;
     }
-    //printf("%s %d", nomeArquivo, comando);
     free(produtosEmEstoque);
     fclose(arquivoEstoque);
     return SUCESSO;
